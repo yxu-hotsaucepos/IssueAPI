@@ -11,15 +11,19 @@ namespace WebAPI.Controllers
 {
     public class IssueProcessorController : ApiController
     {
-        private readonly IIssueStore _issueStore;
+        private  IIssueStore _issueStore;
 
         public IssueProcessorController(IIssueStore issueStore)
         {
             _issueStore = issueStore;
         }
+        public IssueProcessorController()
+        {
+        }
 
         public async Task<HttpResponseMessage> Post(string id, string action)
         {
+            _issueStore = new InMemoryIssueStore();
             bool isValid = IsValidAction(action);
             Issue issue = null;
 

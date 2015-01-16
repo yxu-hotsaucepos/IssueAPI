@@ -12,9 +12,14 @@ namespace WebAPI.Controllers
 {
     public class IssueController : ApiController
     {
-        private readonly IIssueStore _store;
-        private readonly IStateFactory<Issue, IssueState> _stateFactory;
-        private readonly IssueLinkFactory _linkFactory;
+        private  IIssueStore _store;
+        private  IStateFactory<Issue, IssueState> _stateFactory;
+        private  IssueLinkFactory _linkFactory;
+
+        public IssueController()
+        {
+        
+        }
 
         public IssueController(IIssueStore store, IStateFactory<Issue, IssueState> stateFactory, IssueLinkFactory linkFactory)
         {
@@ -25,6 +30,10 @@ namespace WebAPI.Controllers
 
         public async Task<HttpResponseMessage> Get()
         {
+            _store = new InMemoryIssueStore();
+            IssueLinkFactory links = new IssueLinkFactory(this.Request);
+            _stateFactory = new IssueStateFactory(links);
+
             var issues = await _store.FindAsync();
             var issuesState = new IssuesState();
             issuesState.Issues = issues.Select(i => _stateFactory.Create(i));
@@ -34,6 +43,10 @@ namespace WebAPI.Controllers
 
         public async Task<HttpResponseMessage> Get(string id)
         {
+            _store = new InMemoryIssueStore();
+            IssueLinkFactory links = new IssueLinkFactory(this.Request);
+            _stateFactory = new IssueStateFactory(links);
+
             var issue = await _store.FindAsync(id);
             if (issue == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
@@ -82,6 +95,13 @@ namespace WebAPI.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             await _store.DeleteAsync(id);
             return Request.CreateResponse(HttpStatusCode.OK);
+        }
+        private IEnumerable<Issue> GetFakeIssues()
+        {
+            var fakeIssues = new List<Issue>();
+            fakeIssues.Add(new Issue { Id = "1", Title = "An issue", Description = "This is an issue", Status = IssueStatus.Open });
+            fakeIssues.Add(new Issue { Id = "2", Title = "Another issue", Description = "This is another issue", Status = IssueStatus.Closed });
+            return fakeIssues;
         }
     }
 }
