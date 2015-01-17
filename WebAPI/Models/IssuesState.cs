@@ -7,6 +7,9 @@ using CJLink = WebApiContrib.CollectionJson.Link;
 
 namespace WebAPI.Models
 {
+    /// <summary>
+    /// 返回多条数据时使用的对象
+    /// </summary>
     public class IssuesState : IReadDocument
     {
         public IssuesState()

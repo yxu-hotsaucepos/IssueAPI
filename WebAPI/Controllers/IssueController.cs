@@ -13,7 +13,7 @@ namespace WebAPI.Controllers
     public class IssueController : ApiController
     {
         private  IIssueStore _store;
-        private  IStateFactory<Issue, IssueState> _stateFactory;
+        private IssueStateFactory _stateFactory;
         private  IssueLinkFactory _linkFactory;
 
         public IssueController()
@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
         
         }
 
-        public IssueController(IIssueStore store, IStateFactory<Issue, IssueState> stateFactory, IssueLinkFactory linkFactory)
+        public IssueController(IIssueStore store, IssueStateFactory stateFactory, IssueLinkFactory linkFactory)
         {
             _store = store;
             _stateFactory = stateFactory;
@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
         public async Task<HttpResponseMessage> Get()
         {
             _store = new InMemoryIssueStore();
-            IssueLinkFactory links = new IssueLinkFactory(this.Request);
+            IssueLinkFactory links = new IssueLinkFactory(this.Request, this.GetType());
             _stateFactory = new IssueStateFactory(links);
 
             var issues = await _store.FindAsync();
@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
         public async Task<HttpResponseMessage> Get(string id)
         {
             _store = new InMemoryIssueStore();
-            IssueLinkFactory links = new IssueLinkFactory(this.Request);
+            IssueLinkFactory links = new IssueLinkFactory(this.Request, this.GetType());
             _stateFactory = new IssueStateFactory(links);
 
             var issue = await _store.FindAsync(id);

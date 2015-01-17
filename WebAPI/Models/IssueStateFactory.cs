@@ -5,7 +5,7 @@ namespace WebAPI.Models
     /// IStateFactory<Issue, IssueState>便与测试.
     /// create方法初始化一个IssueState实例,复制issue中的数据
     /// </summary>
-    public class IssueStateFactory : IStateFactory<Issue, IssueState>
+    public class IssueStateFactory
     {
         private readonly IssueLinkFactory _links;
  

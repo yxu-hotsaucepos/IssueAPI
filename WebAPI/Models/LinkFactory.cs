@@ -44,9 +44,4 @@ namespace WebAPI.Models
             public const string Self = "self";
         }
     }
-
-    public abstract class LinkFactory<TController> : LinkFactory
-    {
-        public LinkFactory(HttpRequestMessage request) : base(request, typeof(TController)) { }
-    }
 }

@@ -1,13 +1,16 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using WebAPI.Controllers;
 
 namespace WebAPI.Models
 {
-    public class IssueLinkFactory : LinkFactory<IssueController>
+    public class IssueLinkFactory : LinkFactory
     {
         private const string Prefix = "http://webapibook.net/profile#";
-        
-        public new class Rels : LinkFactory.Rels {
+
+        public IssueLinkFactory(HttpRequestMessage request, Type controllerType):base( request,  controllerType){}
+
+        public new  class Rels : LinkFactory.Rels {
             public const string IssueProcessor = Prefix + "issue-processor-";
             public const string Open = Prefix + Actions.Open;
             public const string Close = Prefix + Actions.Close;
@@ -23,10 +26,7 @@ namespace WebAPI.Models
             public const string Transition="transition";
         }
         
-        public IssueLinkFactory(HttpRequestMessage request)
-            : base(request)
-        {
-        }
+     
    
         public Link Transition(string id)
         {
